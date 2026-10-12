@@ -1,0 +1,6 @@
+{
+  "name": "RIASEC Explorer - Holland Career Assessment",
+  "description": "Aplikasi penjelajah kepribadian karir Holland RIASEC dengan antarmuka Liquid Glassmorphism, kalkulasi 3 kode utama, ekspor Excel, dan kartu hasil visual.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
