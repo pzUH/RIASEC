@@ -296,7 +296,7 @@ export const TestView: React.FC<TestViewProps> = ({
             className="w-full py-3 px-6 rounded-2xl glass-button-primary font-bold text-sm text-white flex items-center justify-center gap-2 shadow-xl"
           >
             <CheckCircle2 className="w-4 h-4 text-cyan-300" />
-            <span>Semua 12 Soal Telah Diisi — Analisis Hasil Sekarang</span>
+            <span>Semua {totalQuestions} Soal Telah Diisi — Analisis Hasil Sekarang</span>
           </button>
         </div>
       )}

@@ -119,7 +119,7 @@ export const LIKERT_OPTIONS: LikertOption[] = [
 ];
 
 export const RIASEC_QUESTIONS: RiasecQuestion[] = [
-  // Realistic (2 Questions)
+  // Realistic (4 Questions)
   {
     id: 1,
     dimension: 'R',
@@ -134,85 +134,169 @@ export const RIASEC_QUESTIONS: RiasecQuestion[] = [
     statement: 'Saya lebih menikmati aktivitas di lapangan/luar ruangan (outdoor) dan kegiatan fisik dibandingkan harus duduk seharian menelaah konsep abstrak di balik meja.',
     subtext: 'Menyukai dinamika lapangan, interaksi dengan mesin, tanaman, hewan, atau material fisik.'
   },
-
-  // Investigative (2 Questions)
   {
     id: 3,
+    dimension: 'R',
+    dimensionTitle: 'Realistis (Realistic)',
+    statement: 'Saya tertarik menggunakan perkakas teknik, mesin presisi, perangkat keras komputer, atau instrumen teknikal untuk memecahkan problem mekanik.',
+    subtext: 'Memiliki kecekatan motorik dan minat mendalam terhadap cara kerja komponen mekanik dan perangkat keras.'
+  },
+  {
+    id: 4,
+    dimension: 'R',
+    dimensionTitle: 'Realistis (Realistic)',
+    statement: 'Saya cenderung menyelesaikan masalah praktis secara langsung melalui tindakan nyata daripada berdebat panjang mengenai spekulasi teoritis.',
+    subtext: 'Lebih berorientasi pada hasil kerja nyata yang dapat langsung diuji dan dioperasikan.'
+  },
+
+  // Investigative (4 Questions)
+  {
+    id: 5,
     dimension: 'I',
     dimensionTitle: 'Investigatif (Investigative)',
     statement: 'Saya tertarik membedah penyebab suatu masalah yang rumit, mengumpulkan data ilmiah, dan melakukan analisis logis hingga menemukan solusi dasarnya.',
     subtext: 'Memiliki dorongan rasa ingin tahu tinggi untuk menguak alasan di balik suatu fenomena.'
   },
   {
-    id: 4,
+    id: 6,
     dimension: 'I',
     dimensionTitle: 'Investigatif (Investigative)',
     statement: 'Mempelajari topik teknologi baru, eksperimen sains, teka-teki logika, atau formula matematika memberikan kepuasan intelektual tersendiri bagi saya.',
     subtext: 'Lebih memilih berpikir mendalam dan independen dalam memecahkan misteri intelektual.'
   },
-
-  // Artistic (2 Questions)
   {
-    id: 5,
+    id: 7,
+    dimension: 'I',
+    dimensionTitle: 'Investigatif (Investigative)',
+    statement: 'Saya gemar meneliti pola statistik, membaca jurnal ilmiah, atau mempelajari algoritma komputasi untuk memahami prinsip kerja sistem yang kompleks.',
+    subtext: 'Menghargai riset berbasis bukti empiris dan pemikiran kritis yang sistematis.'
+  },
+  {
+    id: 8,
+    dimension: 'I',
+    dimensionTitle: 'Investigatif (Investigative)',
+    statement: 'Saya lebih suka bekerja mandiri menelaah fakta obyektif sebelum mengambil kesimpulan rasional daripada sekadar mengikuti opini orang banyak.',
+    subtext: 'Objektivitas rasional dan kemandirian intelektual adalah kompas utama dalam berpikir.'
+  },
+
+  // Artistic (4 Questions)
+  {
+    id: 9,
     dimension: 'A',
     dimensionTitle: 'Artistik (Artistic)',
     statement: 'Saya senang mengekspresikan ide dan emosi melalui desain visual, tulisan kreatif, musik, pembuatan konten digital, atau karya seni orisinal.',
     subtext: 'Memiliki kepekaan estetika dan kecintaan terhadap kreasi yang unik tanpa meniru orang lain.'
   },
   {
-    id: 6,
+    id: 10,
     dimension: 'A',
     dimensionTitle: 'Artistik (Artistic)',
     statement: 'Saya bekerja paling produktif ketika diberi ruang kebebasan bereksplorasi tanpa harus terikat prosedur birokrasi atau jadwal baku yang terlalu kaku.',
     subtext: 'Menyukai fleksibilitas, intuisi spontan, dan lingkungan kerja yang merangsang imajinasi.'
   },
-
-  // Social (2 Questions)
   {
-    id: 7,
+    id: 11,
+    dimension: 'A',
+    dimensionTitle: 'Artistik (Artistic)',
+    statement: 'Saya sangat peka terhadap keselarasan visual, tata estetika ruang, komposisi warna, aransemen audio, atau gaya bahasa dalam suatu karya.',
+    subtext: 'Memiliki standar rasa keindahan yang kuat dan apresiasi tinggi terhadap nilai orisinalitas artistik.'
+  },
+  {
+    id: 12,
+    dimension: 'A',
+    dimensionTitle: 'Artistik (Artistic)',
+    statement: 'Saya gemar memikirkan pendekatan kreatif yang tidak lazim (out-of-the-box) untuk menyampaikan pesan dan menciptakan terobosan karya segar.',
+    subtext: 'Membenci repetisi monoton dan selalu bersemangat mencoba eksperimen konsep baru.'
+  },
+
+  // Social (4 Questions)
+  {
+    id: 13,
     dimension: 'S',
     dimensionTitle: 'Sosial (Social)',
     statement: 'Saya merasa sangat puas dan bermakna ketika bisa membimbing, mengajar, mendengarkan, atau membantu orang lain memecahkan masalah kehidupannya.',
     subtext: 'Memiliki empati mendalam dan kepedulian tulus terhadap kesejahteraan sesama.'
   },
   {
-    id: 8,
+    id: 14,
     dimension: 'S',
     dimensionTitle: 'Sosial (Social)',
     statement: 'Bekerja sama dalam kelompok dan menjalin hubungan komunikasi antarpersonal yang akrab merupakan kelebihan utama saya.',
     subtext: 'Mengutamakan keharmonisan, kerja tim, dan kemampuan memotivasi orang di sekitar.'
   },
-
-  // Enterprising (2 Questions)
   {
-    id: 9,
+    id: 15,
+    dimension: 'S',
+    dimensionTitle: 'Sosial (Social)',
+    statement: 'Saya memiliki empati tinggi terhadap kebutuhan emosional orang lain dan tergerak terlibat dalam kegiatan sosial, pendampingan, atau pelayanan masyarakat.',
+    subtext: 'Menemukan makna hidup dari dampak positif yang dirasakan langsung oleh orang lain.'
+  },
+  {
+    id: 16,
+    dimension: 'S',
+    dimensionTitle: 'Sosial (Social)',
+    statement: 'Saya lebih menikmati profesi yang berfokus pada pengembangan potensi manusia dan komunikasi tatap muka daripada bekerja berhadapan dengan mesin dingin.',
+    subtext: 'Interaksi manusiawi yang hangat adalah sumber energi terbesar dalam bekerja.'
+  },
+
+  // Enterprising (4 Questions)
+  {
+    id: 17,
     dimension: 'E',
     dimensionTitle: 'Wirausaha (Enterprising)',
     statement: 'Saya percaya diri dalam memimpin tim, meyakinkan/mempengaruhi orang lain, serta mempresentasikan ide atau produk baru di depan umum.',
     subtext: 'Memiliki daya persuasi kuat, karisma, dan antusiasme untuk menggerakkan orang mencapai target.'
   },
   {
-    id: 10,
+    id: 18,
     dimension: 'E',
     dimensionTitle: 'Wirausaha (Enterprising)',
     statement: 'Mengambil inisiatif bisnis baru, bernegosiasi untuk mencapai kesepakatan menguntungkan, dan mengejar target berisiko tinggi memicu adrenalin positif saya.',
     subtext: 'Fokus pada pencapaian hasil, ekspansi peluang pasar, dan jiwa kepemimpinan dinamis.'
   },
-
-  // Conventional (2 Questions)
   {
-    id: 11,
+    id: 19,
+    dimension: 'E',
+    dimensionTitle: 'Wirausaha (Enterprising)',
+    statement: 'Saya termotivasi oleh pencapaian target kerja yang tinggi, pengakuan kepemimpinan, dan kesempatan untuk memperluas jaringan koneksi bisnis strategis.',
+    subtext: 'Memiliki jiwa kompetitif yang sehat dan selalu berambisi membawa tim ke level pencapaian lebih tinggi.'
+  },
+  {
+    id: 20,
+    dimension: 'E',
+    dimensionTitle: 'Wirausaha (Enterprising)',
+    statement: 'Saya cepat melihat peluang komersial di sekitar saya dan berani mengambil keputusan tegas dalam kondisi yang serba cepat dan menantang.',
+    subtext: 'Visioner, tangkas mengambil momentum, dan berorientasi pada profitabilitas serta pertumbuhan.'
+  },
+
+  // Conventional (4 Questions)
+  {
+    id: 21,
     dimension: 'C',
     dimensionTitle: 'Konvensional (Conventional)',
     statement: 'Saya menyukai pekerjaan yang membutuhkan ketelitian tinggi, pengelolaan data atau angka yang teratur, serta mengikuti prosedur panduan kerja yang jelas.',
     subtext: 'Menghargai akurasi data, minim kesalahan, dan kerapian sistematis dalam setiap proses.'
   },
   {
-    id: 12,
+    id: 22,
     dimension: 'C',
     dimensionTitle: 'Konvensional (Conventional)',
     statement: 'Mengatur arsip dokumen, menyusun pembukuan/anggaran, atau merancang alur kerja yang terstruktur membuat saya merasa tenang dan terkendali.',
     subtext: 'Nyaman dalam keteraturan, prediktabilitas, dan lingkungan yang tertib administratif.'
+  },
+  {
+    id: 23,
+    dimension: 'C',
+    dimensionTitle: 'Konvensional (Conventional)',
+    statement: 'Saya menyukai sistem kerja yang memiliki jadwal pasti, standar operasional prosedur (SOP) baku, dan kepatuhan aturan yang tertib.',
+    subtext: 'Menghindari ketidakpastian serampangan dan menjunjung tinggi kedisiplinan operasional yang rapi.'
+  },
+  {
+    id: 24,
+    dimension: 'C',
+    dimensionTitle: 'Konvensional (Conventional)',
+    statement: 'Saya sangat cermat dalam memeriksa kekeliruan detail angka, verifikasi laporan keuangan, atau menata database agar selalu rapi dan akurat.',
+    subtext: 'Kerapian dokumentasi dan kepatuhan terhadap standar mutu adalah komitmen utama saya.'
   }
 ];
 

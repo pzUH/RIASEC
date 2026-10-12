@@ -135,7 +135,7 @@ export const CaptureCard = React.forwardRef<HTMLDivElement, CaptureCardProps>(
                     </span>
                   </span>
                   <span className="text-xs font-extrabold" style={{ color: dim.info.color }}>
-                    {dim.score}/6
+                    {dim.score}/12
                   </span>
                 </div>
                 <div className="w-full bg-slate-800/80 rounded-full h-1.5 overflow-hidden">

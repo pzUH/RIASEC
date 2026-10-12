@@ -15,12 +15,12 @@ export const HexagonChart: React.FC<HexagonChartProps> = ({ result, size = 320 }
   const angleStep = (2 * Math.PI) / 6;
   const startAngle = -Math.PI / 2;
 
-  // Grid levels (e.g., 2, 4, 6 max score)
-  const gridLevels = [1, 2, 3, 4, 5, 6];
+  // Grid levels (e.g., 2, 4, 6, 8, 10, 12 max score)
+  const gridLevels = [2, 4, 6, 8, 10, 12];
 
-  // Calculate polygon points for a given scale (1 to 6)
+  // Calculate polygon points for a given scale (1 to 12)
   const getGridPoints = (level: number) => {
-    const r = (level / 6) * maxRadius;
+    const r = (level / 12) * maxRadius;
     return HOLLAND_HEXAGON_ORDER.map((_, i) => {
       const angle = startAngle + i * angleStep;
       const x = center + r * Math.cos(angle);
@@ -33,8 +33,8 @@ export const HexagonChart: React.FC<HexagonChartProps> = ({ result, size = 320 }
   const userPolygonPoints = HOLLAND_HEXAGON_ORDER.map((dim, i) => {
     const score = result.scores[dim] || 0;
     // ensure at least slight radius so it doesn't collapse to 0
-    const normalizedScore = Math.max(score, 0.3);
-    const r = (normalizedScore / 6) * maxRadius;
+    const normalizedScore = Math.max(score, 0.5);
+    const r = (normalizedScore / 12) * maxRadius;
     const angle = startAngle + i * angleStep;
     const x = center + r * Math.cos(angle);
     const y = center + r * Math.sin(angle);
@@ -164,7 +164,7 @@ export const HexagonChart: React.FC<HexagonChartProps> = ({ result, size = 320 }
                 fontWeight="600"
                 fill={isTopCode ? '#f8fafc' : '#94a3b8'}
               >
-                {dimInfo.nameId} ({score}/6)
+                {dimInfo.nameId} ({score}/12)
               </text>
             </g>
           );

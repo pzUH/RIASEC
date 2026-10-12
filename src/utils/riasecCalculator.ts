@@ -18,8 +18,8 @@ export function calculateRiasecResult(
     C: 0
   };
 
-  // 2 questions per dimension, max possible score = 2 * 3 = 6
-  const maxPossibleScorePerDimension = 6;
+  // 4 questions per dimension, max possible score = 4 * 3 = 12
+  const maxPossibleScorePerDimension = 12;
 
   RIASEC_QUESTIONS.forEach((q) => {
     const val = answers[q.id] ?? 0;

@@ -1,13 +1,18 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { AssessmentResult } from '../types/riasec';
 import { getCombinedCodeSummary } from '../utils/riasecCalculator';
-import { exportToExcel, captureAndShareCard } from '../utils/exportUtils';
+import {
+  captureAndShareCard,
+  downloadResultImage,
+  copySummaryToClipboard
+} from '../utils/exportUtils';
 import { HexagonChart } from './HexagonChart';
 import { CaptureCard } from './CaptureCard';
 import {
-  FileSpreadsheet,
   Share2,
+  Download,
+  Copy,
   RotateCcw,
   Sparkles,
   Briefcase,
@@ -31,18 +36,17 @@ export const ResultView: React.FC<ResultViewProps> = ({
   onRetake,
   onShowToast
 }) => {
-  const [isExportingExcel, setIsExportingExcel] = useState(false);
-  const [isCapturingCard, setIsCapturingCard] = useState(false);
-  const captureCardRef = useRef<HTMLDivElement>(null);
+  const [isSharing, setIsSharing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
 
   const summary = getCombinedCodeSummary(result.topCode);
 
   useEffect(() => {
-    // Fire confetti celebration on first render
     try {
       confetti({
-        particleCount: 70,
-        spread: 60,
+        particleCount: 75,
+        spread: 65,
         origin: { y: 0.6 },
         colors: ['#06b6d4', '#6366f1', '#ec4899', '#f59e0b', '#10b981']
       });
@@ -51,34 +55,55 @@ export const ResultView: React.FC<ResultViewProps> = ({
     }
   }, []);
 
-  const handleExportExcel = () => {
+  const handleShare = async () => {
     try {
-      setIsExportingExcel(true);
-      exportToExcel(result);
-      onShowToast('success', `Laporan Excel (${result.topCode}) berhasil diunduh via SheetJS!`);
-    } catch (err: any) {
-      console.error(err);
-      onShowToast('error', 'Gagal membuat file Excel. Silakan coba lagi.');
-    } finally {
-      setIsExportingExcel(false);
-    }
-  };
-
-  const handleShareOrDownloadCard = async () => {
-    if (!captureCardRef.current) return;
-    try {
-      setIsCapturingCard(true);
-      const res = await captureAndShareCard(captureCardRef.current, result);
+      setIsSharing(true);
+      const res = await captureAndShareCard(null, result);
       if (res.success) {
         onShowToast('success', res.message);
       } else {
-        onShowToast('error', res.message);
+        onShowToast('info', res.message);
       }
     } catch (err: any) {
       console.error(err);
-      onShowToast('error', 'Terjadi kendala saat merender gambar.');
+      onShowToast('error', 'Gagal membagikan kartu. Mengunduh gambar sebagai cadangan...');
+      try {
+        await downloadResultImage(result);
+        onShowToast('success', 'Gambar kartu hasil berhasil diunduh!');
+      } catch {
+        onShowToast('error', 'Terjadi kesalahan sistem saat memproses gambar.');
+      }
     } finally {
-      setIsCapturingCard(false);
+      setIsSharing(false);
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    try {
+      setIsDownloading(true);
+      await downloadResultImage(result);
+      onShowToast('success', 'Kartu hasil PNG resolusi tinggi berhasil disimpan!');
+    } catch (err) {
+      console.error(err);
+      onShowToast('error', 'Gagal mengunduh gambar kartu.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleCopyText = async () => {
+    try {
+      setIsCopying(true);
+      const ok = await copySummaryToClipboard(result);
+      if (ok) {
+        onShowToast('success', 'Ringkasan hasil berhasil disalin ke clipboard!');
+      } else {
+        onShowToast('info', 'Tidak dapat menyalin otomatis.');
+      }
+    } catch {
+      onShowToast('error', 'Gagal menyalin ringkasan.');
+    } finally {
+      setIsCopying(false);
     }
   };
 
@@ -90,9 +115,6 @@ export const ResultView: React.FC<ResultViewProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-4 sm:py-6 pb-28">
-      {/* Hidden offscreen reference for html2canvas rendering */}
-      <CaptureCard ref={captureCardRef} result={result} isOffscreen={false} />
-
       {/* Hero Result Banner */}
       <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden mb-6 mt-4">
         <div className="absolute -top-24 -right-24 w-60 h-60 bg-indigo-500/30 rounded-full blur-3xl pointer-events-none" />
@@ -102,7 +124,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 mb-3">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Asesmen Holland RIASEC Selesai</span>
+              <span>Asesmen Holland RIASEC Selesai (24 Butir Soal)</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Profil Karir Anda Telah Terpetakan
@@ -159,32 +181,41 @@ export const ResultView: React.FC<ResultViewProps> = ({
           </p>
         </div>
 
-        {/* Action Buttons Row */}
-        <div className="relative z-10 mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-3">
+        {/* Action Buttons Row - XLXS Button Removed per User Request */}
+        <div className="relative z-10 mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-2.5 sm:gap-3">
           <button
-            onClick={handleExportExcel}
-            disabled={isExportingExcel}
-            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-200 text-xs sm:text-sm font-semibold transition-all shadow-lg hover:shadow-emerald-900/30"
+            onClick={handleShare}
+            disabled={isSharing}
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl glass-button-primary text-white text-xs sm:text-sm font-semibold shadow-lg hover:shadow-indigo-500/25 transition-all"
           >
-            {isExportingExcel ? (
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
-            ) : (
-              <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
-            )}
-            <span>Unduh Excel (.xlsx)</span>
-          </button>
-
-          <button
-            onClick={handleShareOrDownloadCard}
-            disabled={isCapturingCard}
-            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl glass-button-primary text-white text-xs sm:text-sm font-semibold"
-          >
-            {isCapturingCard ? (
+            {isSharing ? (
               <Loader2 className="w-4 h-4 animate-spin text-white" />
             ) : (
               <Share2 className="w-4 h-4 text-cyan-300" />
             )}
-            <span>Bagikan / Unduh Kartu (PNG)</span>
+            <span>Bagikan Hasil</span>
+          </button>
+
+          <button
+            onClick={handleDownloadImage}
+            disabled={isDownloading}
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyan-600/30 hover:bg-cyan-600/40 border border-cyan-400/40 text-cyan-200 text-xs sm:text-sm font-semibold transition-all shadow-md"
+          >
+            {isDownloading ? (
+              <Loader2 className="w-4 h-4 animate-spin text-cyan-300" />
+            ) : (
+              <Download className="w-4 h-4 text-cyan-300" />
+            )}
+            <span>Unduh Kartu (PNG)</span>
+          </button>
+
+          <button
+            onClick={handleCopyText}
+            disabled={isCopying}
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs sm:text-sm font-medium transition-colors"
+          >
+            <Copy className="w-4 h-4 text-slate-400" />
+            <span>Salin Teks</span>
           </button>
 
           <button
@@ -221,7 +252,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
         <div className="lg:col-span-7 glass-panel p-5 sm:p-6 rounded-3xl border border-white/15">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-white">Rincian Skor 6 Dimensi RIASEC</h3>
-            <span className="text-[11px] text-slate-400">Skor Maksimal: 6 Poin</span>
+            <span className="text-[11px] text-slate-400">Skor Maksimal: 12 Poin</span>
           </div>
 
           <div className="space-y-3.5">
@@ -263,7 +294,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
 
                     <div className="text-right">
                       <div className="text-xs sm:text-sm font-extrabold" style={{ color: dim.info.color }}>
-                        {dim.score} / 6
+                        {dim.score} / 12
                       </div>
                       <div className="text-[10px] text-slate-400 font-medium">
                         {dim.percentage}%
@@ -376,6 +407,33 @@ export const ResultView: React.FC<ResultViewProps> = ({
               {result.primaryDimension.workEnvironment}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Visual Share Card Preview & Direct Download */}
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/15 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span>Kartu Hasil Visual RIASEC</span>
+            </h3>
+            <p className="text-xs text-slate-400">
+              Pratinjau kartu estetis siap unduh atau bagikan ke media sosial
+            </p>
+          </div>
+          <button
+            onClick={handleDownloadImage}
+            disabled={isDownloading}
+            className="px-4 py-2 rounded-xl bg-indigo-600/40 hover:bg-indigo-600/60 border border-indigo-400/40 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md"
+          >
+            <Download className="w-3.5 h-3.5 text-cyan-300" />
+            <span>Simpan Gambar</span>
+          </button>
+        </div>
+
+        <div className="my-3">
+          <CaptureCard result={result} isOffscreen={false} />
         </div>
       </div>
 

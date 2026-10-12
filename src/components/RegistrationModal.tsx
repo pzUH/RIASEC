@@ -117,7 +117,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
               type="submit"
               className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl glass-button-primary font-semibold text-sm text-white"
             >
-              <span>Lanjut ke Lembar Soal (12 Butir)</span>
+              <span>Lanjut ke Lembar Soal (24 Butir)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

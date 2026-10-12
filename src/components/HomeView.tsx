@@ -57,7 +57,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="flex flex-wrap items-center gap-3 my-6 text-xs text-slate-300">
             <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-amber-400" />
-              12 Soal Ringkas (~3 Menit)
+              24 Soal Komprehensif (~5 Menit)
             </span>
             <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-cyan-400" />
