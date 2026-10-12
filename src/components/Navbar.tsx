@@ -1,14 +1,15 @@
 import React from 'react';
 import { ActiveView } from '../types/riasec';
-import { Compass, Sparkles, Home, PlayCircle, History, BookOpen, Award } from 'lucide-react';
+import { Compass, Sparkles, Home, PlayCircle, History, BookOpen, Award, ShieldCheck } from 'lucide-react';
 
 interface NavbarProps {
   currentView: ActiveView;
   onNavigate: (view: ActiveView) => void;
   hasActiveResult: boolean;
+  isAdmin?: boolean;
 }
 
-export const TopNavbar: React.FC<NavbarProps> = ({ currentView: _currentView, onNavigate, hasActiveResult }) => {
+export const TopNavbar: React.FC<NavbarProps> = ({ currentView, onNavigate, isAdmin }) => {
   return (
     <header className="sticky top-0 z-40 w-full px-4 py-3 bg-[#090D16]/80 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-5xl mx-auto flex items-center justify-between">
@@ -26,9 +27,6 @@ export const TopNavbar: React.FC<NavbarProps> = ({ currentView: _currentView, on
               <span className="font-extrabold text-white text-sm sm:text-base tracking-tight">
                 RIASEC Explorer
               </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                PRO
-              </span>
             </div>
             <p className="text-[10px] text-slate-400 -mt-0.5 hidden sm:block">
               Holland Career Personality Assessment
@@ -37,16 +35,19 @@ export const TopNavbar: React.FC<NavbarProps> = ({ currentView: _currentView, on
         </button>
 
         <div className="flex items-center gap-2">
-          {hasActiveResult && (
-            <button
-              onClick={() => onNavigate('result')}
-              className="px-3 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-400/30 text-indigo-200 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
-            >
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">Hasil Terakhir</span>
-              <span className="sm:hidden">Hasil</span>
-            </button>
-          )}
+          {/* Admin Portal Button */}
+          <button
+            onClick={() => onNavigate('admin')}
+            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              currentView === 'admin'
+                ? 'bg-indigo-600/30 border-indigo-400 text-cyan-300'
+                : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-300'
+            }`}
+            title="Halaman Admin"
+          >
+            <ShieldCheck className={`w-3.5 h-3.5 ${isAdmin ? 'text-emerald-400' : 'text-indigo-400'}`} />
+            <span className="hidden sm:inline">Admin</span>
+          </button>
 
           <button
             onClick={() => onNavigate('test')}

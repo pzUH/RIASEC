@@ -10,14 +10,17 @@ import {
   getLastResultFromStorage,
   getHistoryFromStorage,
   saveResultToStorage,
-  clearHistoryFromStorage
+  clearHistoryFromStorage,
+  deleteResultFromStorage
 } from './utils/riasecCalculator';
+import { isAdminSessionActive } from './utils/adminAuth';
 import { TopNavbar, BottomNavbar } from './components/Navbar';
 import { HomeView } from './components/HomeView';
 import { TestView } from './components/TestView';
 import { ResultView } from './components/ResultView';
 import { HistoryView } from './components/HistoryView';
 import { AboutView } from './components/AboutView';
+import { AdminView } from './components/AdminView';
 import { RegistrationModal } from './components/RegistrationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { Compass, Sparkles } from 'lucide-react';
@@ -31,6 +34,7 @@ export default function App() {
     name: '',
     age: 21
   });
+  const [testSessionId, setTestSessionId] = useState<number>(() => Date.now());
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [preloaderDone, setPreloaderDone] = useState<boolean>(false);
 
@@ -66,7 +70,7 @@ export default function App() {
   };
 
   const handleStartTestClick = () => {
-    // If user name already provided, can open registration to confirm or start directly
+    setTestSessionId(Date.now());
     setIsRegisterOpen(true);
   };
 
@@ -91,6 +95,15 @@ export default function App() {
     clearHistoryFromStorage();
     setHistory([]);
     setCurrentResult(null);
+  };
+
+  const handleDeleteSingleResult = (id: string) => {
+    deleteResultFromStorage(id);
+    const updated = getHistoryFromStorage();
+    setHistory(updated);
+    if (currentResult && currentResult.id === id) {
+      setCurrentResult(updated[0] || null);
+    }
   };
 
   const handleSelectHistoryItem = (res: AssessmentResult) => {
@@ -162,10 +175,11 @@ export default function App() {
         currentView={currentView}
         onNavigate={handleNavigate}
         hasActiveResult={!!currentResult}
+        isAdmin={isAdminSessionActive()}
       />
 
       {/* Main Content Modules (SPA View Switching via showView logic) */}
-      <main className="relative z-10 flex-1">
+      <main className={`relative z-10 flex-1 ${currentView === 'test' ? 'overflow-hidden flex flex-col' : ''}`}>
         {/* VIEW: HOME */}
         <div className={`transition-opacity duration-300 ${currentView === 'home' ? 'block' : 'hidden'}`}>
           <HomeView
@@ -180,6 +194,7 @@ export default function App() {
         <div className={`transition-opacity duration-300 ${currentView === 'test' ? 'block' : 'hidden'}`}>
           {currentView === 'test' && (
             <TestView
+              key={testSessionId}
               userName={activeUser.name || 'Peserta'}
               userAge={activeUser.age || 20}
               onFinish={handleFinishTest}
@@ -226,14 +241,29 @@ export default function App() {
         <div className={`transition-opacity duration-300 ${currentView === 'about' ? 'block' : 'hidden'}`}>
           <AboutView onStartTest={handleStartTestClick} />
         </div>
+
+        {/* VIEW: ADMIN PORTAL */}
+        <div className={`transition-opacity duration-300 ${currentView === 'admin' ? 'block' : 'hidden'}`}>
+          {currentView === 'admin' && (
+            <AdminView
+              history={history}
+              onSelectResult={handleSelectHistoryItem}
+              onDeleteSingle={handleDeleteSingleResult}
+              onClearAll={handleClearHistory}
+              onShowToast={addToast}
+            />
+          )}
+        </div>
       </main>
 
-      {/* Mobile-First Fixed Bottom Navigation Bar */}
-      <BottomNavbar
-        currentView={currentView}
-        onNavigate={handleNavigate}
-        hasActiveResult={!!currentResult}
-      />
+      {/* Mobile-First Fixed Bottom Navigation Bar (Disembunyikan saat sedang tes aktif agar tampilan 100% pas di layar) */}
+      {currentView !== 'test' && (
+        <BottomNavbar
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          hasActiveResult={!!currentResult}
+        />
+      )}
     </div>
   );
 }

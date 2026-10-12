@@ -54,4 +54,4 @@ export interface AssessmentResult {
   answers: Record<number, LikertValue>;
 }
 
-export type ActiveView = 'home' | 'test' | 'result' | 'history' | 'about';
+export type ActiveView = 'home' | 'test' | 'result' | 'history' | 'about' | 'admin';

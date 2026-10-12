@@ -511,3 +511,97 @@ export function exportToExcel(result: AssessmentResult): void {
 
   XLSX.writeFile(wb, filename);
 }
+
+/**
+ * Export all saved assessments to a single consolidated Excel (.xlsx) workbook for Admin
+ */
+export function exportAllAssessmentsToExcel(results: AssessmentResult[]): void {
+  if (results.length === 0) {
+    throw new Error('Tidak ada data hasil asesmen untuk diekspor.');
+  }
+
+  const exportDate = new Date().toLocaleDateString('id-ID', {
+    dateStyle: 'full',
+    timeStyle: 'short'
+  });
+
+  const rows: (string | number)[][] = [
+    ['REKAPITULASI HASIL ASESMEN KEPRIBADIAN KARIR RIASEC (HOLLAND CODE)'],
+    ['Panel Administrator - RIASEC Explorer (24 Butir Soal)'],
+    [`Tanggal Unduh Laporan: ${exportDate}`],
+    [`Total Peserta Tersimpan: ${results.length} Orang`],
+    [''],
+    [
+      'No',
+      'Nama Peserta',
+      'Usia (Th)',
+      'Waktu Asesmen',
+      'Holland Code',
+      'Skor R (/12)',
+      'Skor I (/12)',
+      'Skor A (/12)',
+      'Skor S (/12)',
+      'Skor E (/12)',
+      'Skor C (/12)',
+      'Dimensi Primer',
+      'Dimensi Sekunder',
+      'Rekomendasi Profesi Utama',
+      'Rekomendasi Jurusan Kuliah'
+    ]
+  ];
+
+  results.forEach((item, index) => {
+    const timeFormatted = new Date(item.timestamp).toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    rows.push([
+      index + 1,
+      item.userName,
+      item.userAge,
+      timeFormatted,
+      item.topCode,
+      item.scores.R,
+      item.scores.I,
+      item.scores.A,
+      item.scores.S,
+      item.scores.E,
+      item.scores.C,
+      item.primaryDimension.nameId,
+      item.secondaryDimension.nameId,
+      item.primaryDimension.sampleCareers.slice(0, 3).join(', '),
+      item.primaryDimension.recommendedMajors.slice(0, 3).join(', ')
+    ]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+
+  ws['!cols'] = [
+    { wch: 6 },  // No
+    { wch: 24 }, // Nama
+    { wch: 10 }, // Usia
+    { wch: 22 }, // Waktu
+    { wch: 14 }, // Top Code
+    { wch: 13 }, // R
+    { wch: 13 }, // I
+    { wch: 13 }, // A
+    { wch: 13 }, // S
+    { wch: 13 }, // E
+    { wch: 13 }, // C
+    { wch: 18 }, // Primer
+    { wch: 18 }, // Sekunder
+    { wch: 38 }, // Karir
+    { wch: 38 }  // Jurusan
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Rekapitulasi Semua Peserta');
+
+  const filename = `RIASEC_Rekap_Peserta_${Date.now()}.xlsx`;
+  XLSX.writeFile(wb, filename);
+}
+

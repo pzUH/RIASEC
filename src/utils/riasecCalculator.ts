@@ -119,6 +119,23 @@ export function clearHistoryFromStorage(): void {
   }
 }
 
+export function deleteResultFromStorage(id: string): void {
+  try {
+    const raw = localStorage.getItem(STORAGE_HISTORY_KEY);
+    if (raw) {
+      const history = JSON.parse(raw) as AssessmentResult[];
+      const updated = history.filter(item => item.id !== id);
+      localStorage.setItem(STORAGE_HISTORY_KEY, JSON.stringify(updated));
+    }
+    const last = getLastResultFromStorage();
+    if (last && last.id === id) {
+      localStorage.removeItem(STORAGE_LAST_RESULT_KEY);
+    }
+  } catch (err) {
+    console.error('Failed to delete item from storage', err);
+  }
+}
+
 export function getCombinedCodeSummary(code: string): { title: string; narrative: string } {
   const codeMap: Record<string, { title: string; narrative: string }> = {
     RIA: {
